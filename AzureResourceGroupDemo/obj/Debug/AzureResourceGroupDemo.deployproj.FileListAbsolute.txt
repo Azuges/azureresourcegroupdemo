@@ -1,0 +1,2 @@
+C:\Proyectos\Charlas\Azuges\Entrega continua\Demos\AzureResourceGroupDemo\AzureResourceGroupDemo\bin\Debug\Scripts\Deploy-AzureResourceGroup.ps1
+C:\Proyectos\Charlas\Azuges\Entrega continua\Demos\AzureResourceGroupDemo\AzureResourceGroupDemo\bin\Debug\Templates\DeploymentTemplate.json
