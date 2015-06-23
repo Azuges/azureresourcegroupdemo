@@ -38,6 +38,36 @@
         },
         "_artifactsLocationSasToken": {
             "type": "securestring"
+        },
+        "DemoARMSqlServerName": {
+            "type": "string"
+        },
+        "DemoARMSqlServerLocation": {
+            "type": "string"
+        },
+        "DemoARMSqlServerAdminLogin": {
+            "type": "string"
+        },
+        "DemoARMSqlServerAdminLoginPassword": {
+            "type": "securestring"
+        },
+        "ARMDatabaseName": {
+            "type": "string"
+        },
+        "ARMDatabaseCollation": {
+            "type": "string",
+            "defaultValue": "SQL_Latin1_General_CP1_CI_AS"
+        },
+        "ARMDatabaseEdition": {
+            "type": "string",
+            "defaultValue": "Web",
+            "allowedValues": [
+                "Basic",
+                "Business",
+                "Premium",
+                "Standard",
+                "Web"
+            ]
         }
     },
     "variables": {
@@ -94,6 +124,71 @@
                         "setParameters": {
                             "IIS Web Application Name": "[parameters('WebApplicationDemoName')]"
                         }
+                    }
+                }
+            ],
+            "resources": [
+                {
+                    "apiVersion": "2014-04-01",
+                    "type": "config",
+                    "name": "web",
+                    "dependsOn": [
+                        "[concat('Microsoft.Web/Sites/', parameters('WebApplicationDemoName'))]"
+                    ],
+                    "properties": {
+                        "connectionStrings": [
+                            {
+                                "ConnectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('DemoARMSqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=mytestdatabase;User Id=admin@', parameters('DemoARMSqlServerName'), ';Password=', parameters('DemoARMSqlServerAdminLoginPassword'), ';')]",
+                                "Name": "DefaultConnection",
+                                "Type": 2
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "[parameters('DemoARMSqlServerName')]",
+            "type": "Microsoft.Sql/servers",
+            "location": "[parameters('DemoARMSqlServerLocation')]",
+            "apiVersion": "2014-04-01-preview",
+            "dependsOn": [ ],
+            "tags": {
+                "displayName": "DemoARMSqlServer"
+            },
+            "properties": {
+                "administratorLogin": "[parameters('DemoARMSqlServerAdminLogin')]",
+                "administratorLoginPassword": "[parameters('DemoARMSqlServerAdminLoginPassword')]"
+            },
+            "resources": [
+                {
+                    "name": "AllowAllWindowsAzureIps",
+                    "type": "firewallrules",
+                    "location": "[parameters('DemoARMSqlServerLocation')]",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('DemoARMSqlServerName'))]"
+                    ],
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "0.0.0.0"
+                    }
+                },
+                {
+                    "name": "[parameters('ARMDatabaseName')]",
+                    "type": "databases",
+                    "location": "[parameters('DemoARMSqlServerLocation')]",
+                    "apiVersion": "2014-04-01-preview",
+                    "dependsOn": [
+                        "[parameters('DemoARMSqlServerName')]"
+                    ],
+                    "tags": {
+                        "displayName": "ARMDatabase"
+                    },
+                    "properties": {
+                        "collation": "[parameters('ARMDatabaseCollation')]",
+                        "edition": "[parameters('ARMDatabaseEdition')]",
+                        "maxSizeBytes": "1073741824"
                     }
                 }
             ]

@@ -16,6 +16,21 @@
         },
         "WebApplicationDemoDeployPackage": {
             "value": "WebApplicationDemo.zip"
+        },
+        "DemoARMSqlServerName": {
+            "value": "demosqlserverarm"
+        },
+        "DemoARMSqlServerLocation": {
+            "value": "North Europe"
+        },
+        "DemoARMSqlServerAdminLogin": {
+            "value": "sqladmin"
+        },
+        "ARMDatabaseName": {
+            "value": "DatabaseARM"
+        },
+        "DemoARMSqlServerAdminLoginPassword": {
+            "value": "password$123"
         }
     }
 }

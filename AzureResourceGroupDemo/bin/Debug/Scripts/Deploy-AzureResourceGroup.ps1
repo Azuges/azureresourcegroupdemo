@@ -1,5 +1,4 @@
 ﻿#Requires -Version 3.0
-
 Param(
   [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
   [string] $ResourceGroupName = 'AzureResourceGroupDemo',
@@ -64,14 +63,15 @@ if ($UploadArtifacts)
 
     # Generate the value for artifacts location if it is not provided in the parameter file
     $ArtifactsLocation = $OptionalParameters[$ArtifactsLocationName]
-    if ($ArtifactsLocation -eq $null)
-    {
-        $ArtifactsLocation = $StorageAccountContext.BlobEndPoint + $StorageContainerName
-        $OptionalParameters[$ArtifactsLocationName] = $ArtifactsLocation
-    }
+  
+	# if ($ArtifactsLocation -eq $null)
+	# {
+		$ArtifactsLocation = $StorageAccountContext.BlobEndPoint + $StorageContainerName
+		$OptionalParameters[$ArtifactsLocationName] = $ArtifactsLocation
+	# }
 
     # Use AzCopy to copy files from the local storage drop path to the storage account container
-    & "$AzCopyPath" """$ArtifactStagingDirectory"" $ArtifactsLocation /DestKey:$StorageAccountKey /S /Y /Z:""$env:LocalAppData\Microsoft\Azure\AzCopy\$ResourceGroupName"""
+    & "$AzCopyPath" "$ArtifactStagingDirectory" "$ArtifactsLocation" /DestKey:$StorageAccountKey /S /Y /Z:"$env:LocalAppData\Microsoft\Azure\AzCopy\$ResourceGroupName"
 
     # Generate the value for artifacts location SAS token if it is not provided in the parameter file
     $ArtifactsLocationSasToken = $OptionalParameters[$ArtifactsLocationSasTokenName]
